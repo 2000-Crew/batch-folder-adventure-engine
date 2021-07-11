@@ -50,11 +50,17 @@ goto :command-prompt
 :command-prompt
 @echo off
 
+rem // clear user input so player can't repeatedly push enter to make the same selection over again.
+set user-input=
+
 rem // prompt user for input 
-SET /P user-input=!prompt-text!
+set /P user-input=!prompt-text!
 
 rem // reject empty lines
-if "!user-input!"=="" goto command-prompt
+if "!user-input!"=="" (
+	call :invalid-command
+	goto command-prompt
+)
 
 rem // respond to exit commands
 for %%c in (%exit-commands%) do if "!user-input!"=="%%c" goto game-over
@@ -105,7 +111,7 @@ if exist %area-actions-file-name% (
 	if NOT ERRORLEVEL 1 (
 	
 		rem // command was successful, draw the current folder again
-		echo .
+		echo.
 		call :draw-current-folder
 
 		rem // return immediately
